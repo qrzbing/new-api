@@ -16,6 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { getAppBaseUrl } from '@/lib/app-path'
+
 // ============================================================================
 // Affiliate Functions
 // ============================================================================
@@ -25,5 +27,5 @@ For commercial licensing, please contact support@quantumnous.com
  */
 export function generateAffiliateLink(affCode: string): string {
   if (typeof window === 'undefined') return ''
-  return `${window.location.origin}/sign-up?aff=${affCode}`
+  return `${getAppBaseUrl()}/sign-up?aff=${affCode}`
 }

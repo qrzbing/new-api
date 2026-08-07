@@ -26,6 +26,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TELEGRAM_BIND_RESULT_MESSAGE } from '@/features/auth/constants'
+import { resolveAppUrl } from '@/lib/app-path'
 import { getServerErrorMessageKey } from '@/lib/server-error-message'
 
 import { startTelegramBind } from '../../api'
@@ -65,9 +66,7 @@ export function TelegramBindDialog({
         )
       }
       setFlowToken(response.data.flow_token)
-      setCallbackUrl(
-        new URL(response.data.callback_url, window.location.origin).toString()
-      )
+      setCallbackUrl(resolveAppUrl(response.data.callback_url))
     } catch (bindError: unknown) {
       setError(
         bindError instanceof Error

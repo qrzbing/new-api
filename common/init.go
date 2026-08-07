@@ -32,6 +32,12 @@ func printHelp() {
 func InitEnv() {
 	flag.Parse()
 
+	appBasePath, err := NormalizeAppBasePath(os.Getenv("APP_BASE_PATH"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	AppBasePath = appBasePath
+
 	envVersion := os.Getenv("VERSION")
 	if envVersion != "" {
 		Version = envVersion

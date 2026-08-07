@@ -64,6 +64,25 @@ func TestVerifyTelegramAuthorization(t *testing.T) {
 	}
 }
 
+func TestTelegramBindFailureUsesAppBasePath(t *testing.T) {
+	previousBasePath := common.AppBasePath
+	common.AppBasePath = "/new-api"
+	t.Cleanup(func() { common.AppBasePath = previousBasePath })
+
+	response := httptest.NewRecorder()
+	context, _ := gin.CreateTestContext(response)
+	context.Request = httptest.NewRequest(http.MethodGet, "/api/oauth/telegram/bind/test", nil)
+	context.Params = gin.Params{{Key: "flow_token", Value: "test-flow"}}
+
+	telegramBindFailure(context, telegramBindErrorInvalidRequest)
+
+	assert.Equal(t, http.StatusFound, response.Code)
+	location, err := response.Result().Location()
+	require.NoError(t, err)
+	assert.Equal(t, "/new-api/oauth/telegram", location.Path)
+	assert.Equal(t, "test-flow", location.Query().Get("flow_token"))
+}
+
 func signedTelegramAuthorization(token string, authDate time.Time) url.Values {
 	params := url.Values{
 		"auth_date":  {strconv.FormatInt(authDate.Unix(), 10)},

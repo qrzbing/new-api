@@ -193,6 +193,7 @@ func main() {
 	middleware.SetUpLogger(server)
 	InjectUmamiAnalytics()
 	InjectGoogleAnalytics()
+	InjectAppBasePath()
 
 	// 设置路由
 	router.SetRouter(server, router.WebAssets{
@@ -206,7 +207,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:    ":" + port,
-		Handler: server,
+		Handler: router.WithAppBasePath(server, common.AppBasePath),
 	}
 
 	go func() {
@@ -279,6 +280,14 @@ func InjectGoogleAnalytics() {
 	analyticsInject := []byte(analyticsInjectBuilder.String())
 	placeholder := []byte("<!--Google Analytics-->\n")
 	indexPage = bytes.ReplaceAll(indexPage, placeholder, analyticsInject)
+}
+
+func InjectAppBasePath() {
+	baseHref := common.AppPath("/")
+	baseTag := []byte(fmt.Sprintf("<base href=\"%s\" />", baseHref))
+	indexPage = bytes.ReplaceAll(indexPage, []byte("<base href=\"/\" />"), baseTag)
+	metaTag := []byte(fmt.Sprintf("<meta name=\"app-base-path\" content=\"%s\" />", common.AppBasePath))
+	indexPage = bytes.ReplaceAll(indexPage, []byte("<meta name=\"app-base-path\" content=\"\" />"), metaTag)
 }
 
 func InitResources() error {

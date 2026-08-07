@@ -41,6 +41,7 @@ import type { CustomOAuthProviderInfo } from '@/features/auth/types'
 import { useDialogs } from '@/hooks/use-dialog'
 import { useStatus } from '@/hooks/use-status'
 import { api } from '@/lib/api'
+import { getAppBaseUrl } from '@/lib/app-path'
 import {
   buildDiscordOAuthUrl,
   buildGitHubOAuthUrl,
@@ -202,7 +203,7 @@ export function AccountBindingsTab({
 
   const handleBindCustomOAuth = async (provider: CustomOAuthProviderInfo) => {
     await startOAuthBinding(provider.slug, (state) => {
-      const redirectUri = `${window.location.origin}/oauth/${provider.slug}`
+      const redirectUri = `${getAppBaseUrl()}/oauth/${provider.slug}`
       const url = new URL(provider.authorization_endpoint)
       url.searchParams.set('client_id', provider.client_id)
       url.searchParams.set('redirect_uri', redirectUri)

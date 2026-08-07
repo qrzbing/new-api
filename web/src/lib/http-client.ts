@@ -20,6 +20,7 @@ import axios, { type AxiosRequestConfig } from 'axios'
 import { t } from 'i18next'
 import { toast } from 'sonner'
 
+import { addAppBasePath, appBasePath } from '@/lib/app-path'
 import {
   applyAuthRotation,
   clearAuthentication,
@@ -42,7 +43,7 @@ declare module 'axios' {
 export type ApiRequestConfig = AxiosRequestConfig
 
 export const api = axios.create({
-  baseURL: '',
+  baseURL: appBasePath,
   withCredentials: true,
   headers: {
     'Cache-Control': 'no-store',
@@ -71,9 +72,9 @@ api.get = ((url: string, config: ApiRequestConfig = {}) => {
 function redirectToSignIn(): void {
   if (
     typeof window !== 'undefined' &&
-    window.location.pathname !== '/sign-in'
+    window.location.pathname !== addAppBasePath('/sign-in')
   ) {
-    window.location.replace('/sign-in')
+    window.location.replace(addAppBasePath('/sign-in'))
   }
 }
 

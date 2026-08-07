@@ -69,7 +69,7 @@ func TelegramBindStart(c *gin.Context) {
 		common.ApiError(c, err)
 		return
 	}
-	callbackURL := "/api/oauth/telegram/bind/" + flowToken
+	callbackURL := common.AppPath("/api/oauth/telegram/bind/" + flowToken)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
@@ -220,7 +220,7 @@ func TelegramBind(c *gin.Context) {
 		return
 	}
 
-	callback := "/oauth/telegram?telegram_bind=success&flow_token=" + url.QueryEscape(c.Param("flow_token"))
+	callback := common.AppPath("/oauth/telegram?telegram_bind=success&flow_token=" + url.QueryEscape(c.Param("flow_token")))
 	c.Redirect(http.StatusFound, callback)
 }
 
@@ -230,7 +230,7 @@ func telegramBindFailure(c *gin.Context, errorCode string) {
 		"flow_token":    {c.Param("flow_token")},
 		"error_code":    {errorCode},
 	}
-	c.Redirect(http.StatusFound, "/oauth/telegram?"+query.Encode())
+	c.Redirect(http.StatusFound, common.AppPath("/oauth/telegram?"+query.Encode()))
 }
 
 func TelegramLogin(c *gin.Context) {
